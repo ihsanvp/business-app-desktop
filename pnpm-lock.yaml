@@ -19,6 +19,9 @@ devDependencies:
   '@tsconfig/svelte':
     specifier: ^5.0.0
     version: 5.0.0
+  '@types/node':
+    specifier: ^20.4.5
+    version: 20.4.5
   svelte:
     specifier: ^4.0.5
     version: 4.0.5
@@ -36,7 +39,7 @@ devDependencies:
     version: 5.0.2
   vite:
     specifier: ^4.4.4
-    version: 4.4.4
+    version: 4.4.4(@types/node@20.4.5)
 
 packages:
 
@@ -312,7 +315,7 @@ packages:
       '@sveltejs/vite-plugin-svelte': 2.4.2(svelte@4.0.5)(vite@4.4.4)
       debug: 4.3.4
       svelte: 4.0.5
-      vite: 4.4.4
+      vite: 4.4.4(@types/node@20.4.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -331,7 +334,7 @@ packages:
       magic-string: 0.30.2
       svelte: 4.0.5
       svelte-hmr: 0.15.2(svelte@4.0.5)
-      vite: 4.4.4
+      vite: 4.4.4(@types/node@20.4.5)
       vitefu: 0.2.4(vite@4.4.4)
     transitivePeerDependencies:
       - supports-color
@@ -455,6 +458,10 @@ packages:
 
   /@types/estree@1.0.1:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
+    dev: true
+
+  /@types/node@20.4.5:
+    resolution: {integrity: sha512-rt40Nk13II9JwQBdeYqmbn2Q6IVTA5uPhvSO+JVqdXw/6/4glI6oR9ezty/A9Hg5u7JH4OmYmuQ+XvjKm0Datg==}
     dev: true
 
   /@types/pug@2.0.6:
@@ -1145,7 +1152,7 @@ packages:
     hasBin: true
     dev: true
 
-  /vite@4.4.4:
+  /vite@4.4.4(@types/node@20.4.5):
     resolution: {integrity: sha512-4mvsTxjkveWrKDJI70QmelfVqTm+ihFAb6+xf4sjEU2TmUCTlVX87tmg/QooPEMQb/lM9qGHT99ebqPziEd3wg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -1173,6 +1180,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 20.4.5
       esbuild: 0.18.17
       postcss: 8.4.27
       rollup: 3.27.0
@@ -1188,7 +1196,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 4.4.4
+      vite: 4.4.4(@types/node@20.4.5)
     dev: true
 
   /wrappy@1.0.2:
