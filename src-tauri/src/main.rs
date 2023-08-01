@@ -1,16 +1,32 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{App, Window};
+use tauri::{App, AppHandle, Window};
 
 #[tauri::command]
-async fn app_window_ready(window: Window) {
+async fn window_ready(window: Window) {
     window.show().unwrap();
+}
+
+#[tauri::command]
+async fn activation_complete(window: Window, handle: AppHandle) {
+    let main_window = tauri::WindowBuilder::new(
+        &handle,
+        "main",
+        tauri::WindowUrl::App("/src/windows/main/".into()),
+    )
+    .maximized(false)
+    .visible(false)
+    .build()
+    .expect("error while creating window 'main'");
+
+    main_window.set_title("Business App").unwrap();
+    window.close().unwrap();
 }
 
 fn main() {
     let app = tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![app_window_ready])
+        .invoke_handler(tauri::generate_handler![window_ready, activation_complete])
         .build(tauri::generate_context!())
         .expect("error while building application");
 

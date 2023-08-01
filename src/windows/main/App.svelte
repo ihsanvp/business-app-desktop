@@ -3,7 +3,7 @@
     import { invoke } from "@tauri-apps/api/tauri";
 
     onMount(() => {
-        setTimeout(() => invoke("app_window_ready"), 500);
+        setTimeout(() => invoke("window_ready"), 500);
     });
 </script>
 
