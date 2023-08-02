@@ -1,6 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod activation;
+
 use tauri::{App, AppHandle, Window};
 
 #[tauri::command]
@@ -24,13 +26,27 @@ async fn activation_complete(window: Window, handle: AppHandle) {
     window.close().unwrap();
 }
 
+#[tauri::command]
+async fn save_activation(key: String, handle: AppHandle) {
+    let hash = activation::get_device_hash(&key);
+    let hash_file_path = activation::get_hash_save_path(&handle);
+    let key_file_path = activation::get_key_save_path(&handle);
+
+    activation::save_to_file(hash_file_path, hash);
+    activation::save_to_file(key_file_path, key);
+}
+
 fn main() {
     let app = tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![window_ready, activation_complete])
+        .invoke_handler(tauri::generate_handler![
+            window_ready,
+            activation_complete,
+            save_activation
+        ])
         .build(tauri::generate_context!())
         .expect("error while building application");
 
-    let activated = false;
+    let activated = activation::check_activation(&app.handle());
 
     if activated {
         create_main_window(&app);

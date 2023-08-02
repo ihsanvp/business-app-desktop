@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { invoke } from "@tauri-apps/api/tauri";
+    import * as os from "@tauri-apps/api/os";
     import ActivationInput from "../../lib/components/ActivationInput.svelte";
     import Spinner from "../../lib/components/Spinner.svelte";
 
@@ -33,6 +34,8 @@
         }
 
         // TODO: single device activation logic !IMPORTANT
+        await invoke("save_activation", { key });
+
         await invoke("activation_complete");
     }
 
