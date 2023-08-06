@@ -93,7 +93,7 @@ pub fn get_key_save_path(handle: &AppHandle) -> PathBuf {
     file_path
 }
 
-pub fn save_to_file(path: PathBuf, data: String) {
+pub fn save_to_file(path: PathBuf, data: &String) {
     let mut file = std::fs::File::create(path).unwrap();
     file.write_all(data.as_bytes()).unwrap();
 }

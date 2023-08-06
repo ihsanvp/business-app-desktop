@@ -23,11 +23,18 @@ pub async fn activation_complete(window: Window, handle: AppHandle) {
 }
 
 #[tauri::command]
-pub async fn save_activation(key: String, handle: AppHandle) {
+pub async fn get_device_fingerprint() -> String {
+    activation::get_device_fingerprint()
+}
+
+#[tauri::command]
+pub async fn save_activation(key: String, handle: AppHandle) -> String {
     let hash = activation::get_device_hash(&key);
     let hash_file_path = activation::get_hash_save_path(&handle);
     let key_file_path = activation::get_key_save_path(&handle);
 
-    activation::save_to_file(hash_file_path, hash);
-    activation::save_to_file(key_file_path, key);
+    activation::save_to_file(hash_file_path, &hash);
+    activation::save_to_file(key_file_path, &key);
+
+    hash
 }

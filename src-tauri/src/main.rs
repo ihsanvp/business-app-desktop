@@ -10,7 +10,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             commands::window_ready,
             commands::activation_complete,
-            commands::save_activation
+            commands::save_activation,
+            commands::get_device_fingerprint
         ])
         .build(tauri::generate_context!())
         .expect("error while building application");

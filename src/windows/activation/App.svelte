@@ -1,45 +1,29 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { invoke } from "@tauri-apps/api/tauri";
-    import * as os from "@tauri-apps/api/os";
     import ActivationInput from "../../lib/components/ActivationInput.svelte";
     import Spinner from "../../lib/components/Spinner.svelte";
+    import { Toasts, toast } from "svoast";
+    import { activateKey } from "../../lib/utils/activation";
 
     let loading = false;
 
     async function onSubmit(e: CustomEvent<string>) {
         try {
             loading = true;
-            await activate(e.detail);
+            await activateKey(e.detail);
         } catch (err) {
-            // TODO: display error
-            console.log(err);
+            toast.error("Server Error. Please try again later.", {
+                closable: true,
+                duration: 5000,
+            });
             loading = false;
         } finally {
             loading = false;
         }
     }
 
-    async function activate(key: string) {
-        if (!key) return;
-
-        const res = await fetch(
-            `http://localhost:8000/activation/status/${key}`
-        );
-
-        if (res.status != 200) {
-            // TODO: show error message in ui
-            console.log("invalid key");
-            return;
-        }
-
-        // TODO: single device activation logic !IMPORTANT
-        await invoke("save_activation", { key });
-
-        await invoke("activation_complete");
-    }
-
-    onMount(() => {
+    onMount(async () => {
         setTimeout(() => invoke("window_ready"), 500);
     });
 </script>
@@ -47,6 +31,7 @@
 <main
     class="w-screen h-screen flex flex-col items-center justify-center px-10 py-32 gap-10"
 >
+    <Toasts position="bottom-center" />
     {#if loading}
         <div
             class="fixed inset-0 z-[999] backdrop-blur-sm flex items-center justify-center"

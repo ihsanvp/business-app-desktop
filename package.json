@@ -12,7 +12,9 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.4.0"
+    "@tauri-apps/api": "^1.4.0",
+    "axios": "^1.4.0",
+    "svoast": "^2.2.1"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
