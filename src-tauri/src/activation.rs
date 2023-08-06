@@ -1,3 +1,5 @@
+use crate::constants;
+
 use sha2::{digest::FixedOutput, Digest, Sha256, Sha512};
 use std::{
     hash::{Hash, Hasher},
@@ -5,8 +7,6 @@ use std::{
     path::PathBuf,
 };
 use tauri::AppHandle;
-
-const SECRET: &str = "KOMX3z5lP0rokfD1kqo22LHnxUxFc73e";
 
 struct FingerPrintHasher(Sha256);
 struct DeviceHasher(Sha512);
@@ -47,7 +47,7 @@ pub fn get_device_hash(key: &String) -> String {
     let mut hasher = DeviceHasher::new();
     let fingerpint = get_device_fingerprint();
 
-    SECRET.hash(&mut hasher);
+    constants::SECRET.hash(&mut hasher);
     fingerpint.hash(&mut hasher);
     key.hash(&mut hasher);
 

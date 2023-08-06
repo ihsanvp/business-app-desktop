@@ -3,6 +3,7 @@
 
 mod activation;
 mod commands;
+mod constants;
 
 fn main() {
     let app = tauri::Builder::default()
