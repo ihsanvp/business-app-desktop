@@ -11,6 +11,18 @@
     "version": "../package.json"
   },
   "tauri": {
+    "updater": {
+      "active": false,
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDFBRjI2MjQxMEM3Q0Q0ODgKUldTSTFId01RV0x5R2tOU3BpVTJEbTI4VnBoQ0tGNVA3VkhXcC9scXhrM0Y5TXNRbldCT1pva1kK",
+      "endpoints": [
+        "https://gist.githubusercontent.com/ihsanvp/3b82934f8560db6e988c49c22977c90f/raw/6384e0a15d35eda44b014122acd8c0861915e047/business-app-updater.json"
+      ],
+      "windows": {
+        "installMode": "basicUi",
+        "installerArgs": []
+      }
+    },
     "allowlist": {
       "all": false,
       "os": {
@@ -24,7 +36,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.business.app",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
