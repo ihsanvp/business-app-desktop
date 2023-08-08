@@ -12,7 +12,7 @@
   },
   "tauri": {
     "updater": {
-      "active": false,
+      "active": true,
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDFBRjI2MjQxMEM3Q0Q0ODgKUldTSTFId01RV0x5R2tOU3BpVTJEbTI4VnBoQ0tGNVA3VkhXcC9scXhrM0Y5TXNRbldCT1pva1kK",
       "endpoints": [
