@@ -5,7 +5,7 @@ on:
       - main
 
 jobs:
-  publish-tauri:
+  publish-app:
     permissions:
       contents: write
     strategy:
