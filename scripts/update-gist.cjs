@@ -34,6 +34,11 @@ async function run() {
         }
     })
 
+    octokit.rest.repos.updateRelease({
+        release_id: "",
+        owner: isContext.repo
+    })
+
 
     const final = {
         version: getVersion(release.data.tag_name),
