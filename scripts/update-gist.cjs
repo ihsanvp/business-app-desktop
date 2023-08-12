@@ -7,7 +7,7 @@ const fs = require("fs")
 
 
 const octokit = new Octokit({
-    auth: process.env.GITHUB_AUTH_TOKEN || "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"
+    auth: process.env.GITHUB_AUTH_TOKEN
 })
 
 const AssetMap = {

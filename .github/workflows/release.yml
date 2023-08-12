@@ -52,10 +52,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+      - name: install pnpm
+        run: npm install -g pnpm
+      - name: install frontend dependencies
+        run: pnpm install
       - name: generate gist
         env:
           GITHUB_AUTH_TOKEN: ${{ secrets.GIT_AUTH_TOKEN }}
-        run: npm run gen:updater
+        run: pnpm gen:updater
       - name: Deploy
         uses: exuanbo/actions-deploy-gist@v1
         with:
