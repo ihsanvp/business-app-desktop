@@ -26,19 +26,14 @@ const AssetMap = {
 }
 
 async function run() {
-    const release = await octokit.request("GET /repos/{owner}/{repo}/releases/latest", {
+    const release = await octokit.request("GET /repos/{owner}/{repo}/releases/{release_id}", {
         owner: "ihsanvp",
         repo: "business-app-desktop",
+        release_id: process.env.RELEASE_ID,
         headers: {
             'X-GitHub-Api-Version': '2022-11-28'
         }
     })
-
-    octokit.rest.repos.updateRelease({
-        release_id: "",
-        owner: isContext.repo
-    })
-
 
     const final = {
         version: getVersion(release.data.tag_name),
