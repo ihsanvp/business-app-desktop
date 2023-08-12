@@ -42,3 +42,16 @@ jobs:
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: false
+  
+  update-gist:
+    needs: publish-app
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.TOKEN }}
+          gist_id: 3b82934f8560db6e988c49c22977c90f
+          file_path: .app/updater.json
+          file_type: text

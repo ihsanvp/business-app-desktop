@@ -10,11 +10,13 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "tauri": "tauri",
-    "app:build": "tauri build"
+    "app:build": "tauri build",
+    "gen:updater": "node scripts/update-gist.cjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.4.0",
     "axios": "^1.4.0",
+    "octokit": "^3.1.0",
     "svoast": "^2.2.1"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 *.env
 .tauri
+.app
 
 # Logs
 logs
