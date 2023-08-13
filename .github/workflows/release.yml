@@ -107,15 +107,24 @@ jobs:
         run: npm install -g pnpm
       - name: install frontend dependencies
         run: pnpm install
-      - name: generate gist
+      - uses: actions/github-script@v6
+        name: Generate Updater Data
+        id: generate-updater-data
         env:
           GITHUB_AUTH_TOKEN: ${{ secrets.TOKEN }}
           RELEASE_ID: ${{ needs.create-release.outputs.release_id }}
-        run: pnpm gen:updater
+        with:
+          script: |
+            const script = require('.scripts/github-gist-updater-script.js')
+            await script({github, context, core, fetch})
+      - uses: "finnp/create-file-action@master"
+        env:
+          FILE_NAME: "updater.json"
+          FILE_DATA: ${{steps.generate-updater-data.outputs.updaterData}}
       - name: Deploy
         uses: exuanbo/actions-deploy-gist@v1
         with:
           token: ${{ secrets.TOKEN }}
           gist_id: 3b82934f8560db6e988c49c22977c90f
-          file_path: .app/updater.json
+          file_path: ./updater.json
           file_type: text
