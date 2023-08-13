@@ -19,11 +19,11 @@ jobs:
             const update = latest.data.assets.find(a => a.name.includes("latest.json"))
             return update.browser_download_url
       - name: download latest.json
-        run: wget ${{ steps.get-download-url.outputs.result }} -O ./updater.json
+        run: wget ${{ steps.get-download-url.outputs.result }} -O ./business-app-updater.json
       - name: upload to gist
         uses: exuanbo/actions-deploy-gist@v1
         with:
           token: ${{ secrets.TOKEN }}
           gist_id: 3b82934f8560db6e988c49c22977c90f
-          file_path: ./updater.json
+          file_path: ./business-app-updater.json
           file_type: text
