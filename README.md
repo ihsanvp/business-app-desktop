@@ -1,10 +1,8 @@
-# Tauri + Svelte + Typescript
+# Business App
 
-This template should help get you started developing with Tauri, Svelte and TypeScript in Vite.
+Empower Your Business with Advanced Analytics.
 
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+[`Download App`](https://business.studiotwofour.com/)
 
 ## Workflows
 
