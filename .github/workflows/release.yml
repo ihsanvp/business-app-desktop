@@ -1,4 +1,5 @@
 name: 'Publish New Release'
+run-name: Release ${{ github.action_ref }}
 on:
   workflow_dispatch:
     inputs:
