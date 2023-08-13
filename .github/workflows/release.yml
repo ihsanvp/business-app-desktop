@@ -7,7 +7,7 @@ on:
         required: true
 
 jobs:
-  check-latest-version:
+  check-release:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -17,10 +17,19 @@ jobs:
           node-version: 16
       - name: Get current version
         run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
-      - name: Check version already exists
+      - name: Check valid release_id
         uses: actions/github-script@v6
         env:
-          release_id: ${{ needs.create-release.outputs.release_id }}
+          release_id: ${{ github.event.inputs.releaseId }}
+        with:
+          script: |
+            await github.rest.repos.getRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: process.env.release_id
+            })
+      - name: Check version already exists
+        uses: actions/github-script@v6
         with:
           script: |
             const current_tag = `v${process.env.PACKAGE_VERSION}`
@@ -34,7 +43,7 @@ jobs:
             }
 
   build-app:
-    needs: [check-latest-version]
+    needs: [check-release]
     permissions:
       contents: write
     strategy:
@@ -72,7 +81,7 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-20.04
-    needs: [build-app, check-latest-version]
+    needs: [build-app, check-release]
 
     steps:
       - name: publish release
@@ -92,7 +101,7 @@ jobs:
               })
 
   update-gist:
-    needs: [check-latest-version, build-app, publish-release]
+    needs: [check-release, build-app, publish-release]
     runs-on: ubuntu-20.04
     steps:
       - name: get latest.json download url
