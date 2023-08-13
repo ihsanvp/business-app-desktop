@@ -78,6 +78,22 @@ jobs:
     needs: [create-release, build-app]
 
     steps:
+      - name: draft latest release
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const latest = await github.rest.repos.getLatestRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+            })
+
+            await github.rest.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: latest.data.id,
+                draft: true,
+            })
+
       - name: publish release
         id: publish-release
         uses: actions/github-script@v6
@@ -85,18 +101,14 @@ jobs:
           release_id: ${{ needs.create-release.outputs.release_id }}
         with:
           script: |
-            try {
             github.rest.repos.updateRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              release_id: process.env.release_id,
-              draft: false,
-              prerelease: false,
-              make_latest: true,
-            })
-            } catch (err) {
-            console.log(err)
-            }
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: process.env.release_id,
+                draft: false,
+                prerelease: false,
+                make_latest: true,
+              })
 
   update-gist:
     needs: [create-release, build-app, publish-release]
