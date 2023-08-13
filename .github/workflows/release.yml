@@ -78,22 +78,36 @@ jobs:
     needs: [create-release, build-app]
 
     steps:
-      - name: draft latest release
+      - name: draft or delete latest release
         uses: actions/github-script@v6
+        env:
+          release_id: ${{ needs.create-release.outputs.release_id }}
         with:
           script: |
             const latest = await github.rest.repos.getLatestRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
             })
+            const current = await github.rest.repos.getRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: latest.data.id,
+            })
 
-            await github.rest.repos.updateRelease({
+            if (latest.data.tag_name == current.data.tag_name) {
+              await github.rest.repos.deleteRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: latest.data.id,
+              })
+            } else {
+              await github.rest.repos.updateRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 release_id: latest.data.id,
                 draft: true,
-            })
-
+              })
+            }
       - name: publish release
         id: publish-release
         uses: actions/github-script@v6
@@ -109,38 +123,3 @@ jobs:
                 prerelease: false,
                 make_latest: true,
               })
-
-  update-gist:
-    needs: [create-release, build-app, publish-release]
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: install pnpm
-        run: npm install -g pnpm
-      - name: install frontend dependencies
-        run: pnpm install
-      - uses: actions/github-script@v6
-        name: Generate Updater Data
-        id: generate-updater-data
-        env:
-          GITHUB_AUTH_TOKEN: ${{ secrets.TOKEN }}
-          RELEASE_ID: ${{ needs.create-release.outputs.release_id }}
-        with:
-          script: |
-            const script = require('./scripts/github-gist-updater-script.js')
-            await script({github, context, core, fetch})
-      - uses: "finnp/create-file-action@master"
-        env:
-          FILE_NAME: "updater.json"
-          FILE_DATA: ${{steps.generate-updater-data.outputs.updaterData}}
-      - name: Deploy
-        uses: exuanbo/actions-deploy-gist@v1
-        with:
-          token: ${{ secrets.TOKEN }}
-          gist_id: 3b82934f8560db6e988c49c22977c90f
-          file_path: ./updater.json
-          file_type: text
