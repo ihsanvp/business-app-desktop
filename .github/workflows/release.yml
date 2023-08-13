@@ -5,7 +5,33 @@ on:
       - main
 
 jobs:
+  check-latest-version:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Get current version
+        run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+      - name: Check version already exists
+        uses: actions/github-script@v6
+        env:
+          release_id: ${{ needs.create-release.outputs.release_id }}
+        with:
+          script: |
+            const current_tag = `app-v${process.env.PACKAGE_VERSION}`
+            const latest = await github.rest.repos.getLatestRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+            })
+
+            if (current_tag == latest.data.tag_name) {
+              process.exit(1)
+            }
   create-release:
+    needs: check-latest-version
     permissions:
       contents: write
     runs-on: ubuntu-20.04
@@ -37,7 +63,7 @@ jobs:
             return data.id
 
   build-app:
-    needs: create-release
+    needs: [create-release, check-latest-version]
     permissions:
       contents: write
     strategy:
@@ -75,39 +101,9 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-20.04
-    needs: [create-release, build-app]
+    needs: [create-release, build-app, check-latest-version]
 
     steps:
-      - name: draft or delete latest release
-        uses: actions/github-script@v6
-        env:
-          release_id: ${{ needs.create-release.outputs.release_id }}
-        with:
-          script: |
-            const latest = await github.rest.repos.getLatestRelease({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-            })
-            const current = await github.rest.repos.getRelease({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                release_id: latest.data.id,
-            })
-
-            if (latest.data.tag_name == current.data.tag_name) {
-              await github.rest.repos.deleteRelease({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                release_id: latest.data.id,
-              })
-            } else {
-              await github.rest.repos.updateRelease({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                release_id: latest.data.id,
-                draft: true,
-              })
-            }
       - name: publish release
         id: publish-release
         uses: actions/github-script@v6

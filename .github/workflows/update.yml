@@ -16,9 +16,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
-
             const update = latest.data.assets.find(a => a.name.includes("latest.json"))
-
             return update.browser_download_url
       - name: download latest.json
         run: wget ${{ steps.get-download-url.outputs.result }} -O ./updater.json
