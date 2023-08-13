@@ -1,7 +1,7 @@
 name: Update Gist
 on:
   release:
-    types: [released]
+    types: [released, published]
 
 jobs:
   update-gist:
