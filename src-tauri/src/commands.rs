@@ -1,4 +1,4 @@
-use crate::activation;
+use crate::{activation, constants};
 use tauri::{AppHandle, Window};
 
 #[tauri::command]
@@ -18,7 +18,7 @@ pub async fn activation_complete(window: Window, handle: AppHandle) {
     .build()
     .expect("error while creating window 'main'");
 
-    main_window.set_title("Business App").unwrap();
+    main_window.set_title(constants::MAIN_WINDOW_TITLE).unwrap();
     window.close().unwrap();
 }
 

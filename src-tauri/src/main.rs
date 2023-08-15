@@ -19,7 +19,7 @@ fn main() {
     let activated = activation::check_activation(&app.handle());
 
     if activated {
-        tauri::WindowBuilder::new(
+        let main_window = tauri::WindowBuilder::new(
             &app,
             "main",
             tauri::WindowUrl::App("/src/windows/main/".into()),
@@ -28,8 +28,9 @@ fn main() {
         .visible(false)
         .build()
         .expect("error while creating window 'main'");
+        main_window.set_title(constants::MAIN_WINDOW_TITLE).unwrap();
     } else {
-        tauri::WindowBuilder::new(
+        let activation_window = tauri::WindowBuilder::new(
             &app,
             "activation",
             tauri::WindowUrl::App("/src/windows/activation/".into()),
@@ -41,6 +42,9 @@ fn main() {
         .inner_size(800.0, 600.0)
         .build()
         .expect("error while creating window 'activation'");
+        activation_window
+            .set_title(constants::ACTIVATION_WINDOW_TITLE)
+            .unwrap();
     }
 
     app.run(|_, _| {});
