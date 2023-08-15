@@ -2,10 +2,10 @@
     import { onMount } from "svelte";
     import { invoke } from "@tauri-apps/api/tauri";
     import { appWindow } from "@tauri-apps/api/window";
-    import ActivationInput from "../../lib/components/ActivationInput.svelte";
-    import Spinner from "../../lib/components/Spinner.svelte";
     import { Toasts, toast } from "svoast";
     import { activateKey } from "../../lib/utils/activation";
+    import ActivationInput from "../../lib/components/ActivationInput.svelte";
+    import Spinner from "../../lib/components/Spinner.svelte";
     import Icon from "@iconify/svelte";
 
     let loading = false;
