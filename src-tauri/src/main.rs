@@ -29,6 +29,7 @@ fn main() {
         .build()
         .expect("error while creating window 'main'");
         main_window.set_title(constants::MAIN_WINDOW_TITLE).unwrap();
+        main_window.maximize().unwrap();
     } else {
         let activation_window = tauri::WindowBuilder::new(
             &app,
