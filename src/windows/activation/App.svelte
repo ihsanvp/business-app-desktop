@@ -1,10 +1,12 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { invoke } from "@tauri-apps/api/tauri";
+    import { appWindow } from "@tauri-apps/api/window";
     import ActivationInput from "../../lib/components/ActivationInput.svelte";
     import Spinner from "../../lib/components/Spinner.svelte";
     import { Toasts, toast } from "svoast";
     import { activateKey } from "../../lib/utils/activation";
+    import Icon from "@iconify/svelte";
 
     let loading = false;
 
@@ -28,9 +30,20 @@
     });
 </script>
 
-<main
-    class="w-screen h-screen flex flex-col items-center justify-center px-10 py-32 gap-10"
->
+<main class="w-screen h-screen flex flex-col">
+    <div
+        data-tauri-drag-region
+        class="w-full h-20 flex items-center justify-end"
+    >
+        <div class="mr-5">
+            <button
+                class="hover:bg-zinc-900 p-2 rounded"
+                on:click={appWindow.close}
+            >
+                <Icon icon="mdi:close" />
+            </button>
+        </div>
+    </div>
     <Toasts position="bottom-center" />
     {#if loading}
         <div
@@ -39,11 +52,15 @@
             <Spinner class="w-10 h-10 text-white" />
         </div>
     {/if}
-    <div class="text-center text-5xl font-semibold">Business App</div>
-    <div class="text-center opacity-60 px-32">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius ut
-        placeat facilis officiis, minima repellendus. Amet vero quas molestias
-        autem.
+    <div
+        class="flex-1 flex flex-col items-center justify-center pb-20 px-10 gap-10"
+    >
+        <div class="text-center text-5xl font-semibold">Business App</div>
+        <div class="text-center opacity-60 px-32">
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius ut
+            placeat facilis officiis, minima repellendus. Amet vero quas
+            molestias autem.
+        </div>
+        <ActivationInput groups={4} fieldLength={4} on:submit={onSubmit} />
     </div>
-    <ActivationInput groups={4} fieldLength={4} on:submit={onSubmit} />
 </main>
