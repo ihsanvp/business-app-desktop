@@ -2,6 +2,7 @@ use crate::constants;
 
 use sha2::{digest::FixedOutput, Digest, Sha256, Sha512};
 use std::{
+    collections::HashMap,
     hash::{Hash, Hasher},
     io::{Read, Write},
     path::PathBuf,
@@ -121,4 +122,44 @@ pub fn check_activation(handle: &AppHandle) -> bool {
     }
 
     false
+}
+
+pub async fn validate_key_with_server(key: &String) -> Result<(), String> {
+    let api_client = reqwest::Client::new();
+
+    let validation_resp = api_client
+        .get(format!("http://localhost:8787/activation/{key}"))
+        .send()
+        .await
+        .map_err(|err| err.to_string())?;
+
+    if !validation_resp.status().is_success() {
+        return Err("Invalid License Key".into());
+    }
+
+    let device_fingerprint = get_device_fingerprint();
+    let mut usage_req_data = HashMap::new();
+    usage_req_data.insert("device", &device_fingerprint);
+
+    let usage_resp = api_client
+        .post(format!("http://localhost:8787/activation/{key}/usage"))
+        .json(&usage_req_data)
+        .send()
+        .await
+        .map_err(|err| err.to_string())?;
+
+    if !usage_resp.status().is_success() {
+        return Err("License Key Expired".into());
+    }
+
+    Ok(())
+}
+
+pub fn activate_current_device(key: &String, handle: &AppHandle) {
+    let hash = get_device_hash(&key);
+    let hash_file_path = get_hash_save_path(handle);
+    let key_file_path = get_key_save_path(handle);
+
+    save_to_file(hash_file_path, &hash);
+    save_to_file(key_file_path, &key);
 }

@@ -9,9 +9,7 @@ fn main() {
     let app = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             commands::window_ready,
-            commands::activation_complete,
-            commands::save_activation,
-            commands::get_device_fingerprint
+            commands::activate_key
         ])
         .build(tauri::generate_context!())
         .expect("error while building application");
@@ -39,6 +37,7 @@ fn main() {
         .maximized(false)
         .visible(false)
         .decorations(false)
+        .resizable(false)
         .center()
         .inner_size(800.0, 600.0)
         .build()

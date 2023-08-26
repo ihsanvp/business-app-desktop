@@ -3,7 +3,6 @@
     import { invoke } from "@tauri-apps/api/tauri";
     import { appWindow } from "@tauri-apps/api/window";
     import { Toasts, toast } from "svoast";
-    import { activateKey } from "../../lib/utils/activation";
     import ActivationInput from "../../lib/components/ActivationInput.svelte";
     import Spinner from "../../lib/components/Spinner.svelte";
     import Icon from "@iconify/svelte";
@@ -13,16 +12,28 @@
     async function onSubmit(e: CustomEvent<string>) {
         try {
             loading = true;
-            await activateKey(e.detail);
+            await invoke("activate_key", { key: e.detail });
         } catch (err) {
-            toast.error("Server Error. Please try again later.", {
+            toast.error(String(err), {
                 closable: true,
                 duration: 5000,
             });
-            loading = false;
         } finally {
             loading = false;
         }
+
+        // try {
+        //     loading = true;
+        //     await activateKey(e.detail);
+        // } catch (err) {
+        //     toast.error("Server Error. Please try again later.", {
+        //         closable: true,
+        //         duration: 5000,
+        //     });
+        //     loading = false;
+        // } finally {
+        //     loading = false;
+        // }
     }
 
     onMount(async () => {

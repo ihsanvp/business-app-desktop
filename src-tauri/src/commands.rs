@@ -7,7 +7,10 @@ pub async fn window_ready(window: Window) {
 }
 
 #[tauri::command]
-pub async fn activation_complete(window: Window, handle: AppHandle) {
+pub async fn activate_key(key: String, handle: AppHandle, window: Window) -> Result<(), String> {
+    activation::validate_key_with_server(&key).await?;
+    activation::activate_current_device(&key, &handle);
+
     let main_window = tauri::WindowBuilder::new(
         &handle,
         "main",
@@ -21,21 +24,6 @@ pub async fn activation_complete(window: Window, handle: AppHandle) {
     main_window.set_title(constants::MAIN_WINDOW_TITLE).unwrap();
     main_window.maximize().unwrap();
     window.close().unwrap();
-}
 
-#[tauri::command]
-pub async fn get_device_fingerprint() -> String {
-    activation::get_device_fingerprint()
-}
-
-#[tauri::command]
-pub async fn save_activation(key: String, handle: AppHandle) -> String {
-    let hash = activation::get_device_hash(&key);
-    let hash_file_path = activation::get_hash_save_path(&handle);
-    let key_file_path = activation::get_key_save_path(&handle);
-
-    activation::save_to_file(hash_file_path, &hash);
-    activation::save_to_file(key_file_path, &key);
-
-    hash
+    Ok(())
 }
