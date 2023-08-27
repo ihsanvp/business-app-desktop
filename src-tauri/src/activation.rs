@@ -126,30 +126,22 @@ pub fn check_activation(handle: &AppHandle) -> bool {
 
 pub async fn validate_key_with_server(key: &String) -> Result<(), String> {
     let api_client = reqwest::Client::new();
-
-    let validation_resp = api_client
-        .get(format!("http://localhost:8787/activation/{key}"))
-        .send()
-        .await
-        .map_err(|err| err.to_string())?;
-
-    if !validation_resp.status().is_success() {
-        return Err("Invalid License Key".into());
-    }
-
     let device_fingerprint = get_device_fingerprint();
-    let mut usage_req_data = HashMap::new();
-    usage_req_data.insert("device", &device_fingerprint);
 
-    let usage_resp = api_client
+    let mut data = HashMap::new();
+    data.insert("device", &device_fingerprint);
+
+    let resp = api_client
         .post(format!("http://localhost:8787/activation/{key}/usage"))
-        .json(&usage_req_data)
+        .json(&data)
         .send()
         .await
         .map_err(|err| err.to_string())?;
 
-    if !usage_resp.status().is_success() {
-        return Err("License Key Expired".into());
+    match resp.status() {
+        reqwest::StatusCode::NOT_FOUND => return Err("Invalid License Key".into()),
+        reqwest::StatusCode::CONFLICT => return Err("License Key Expired".into()),
+        _ => {}
     }
 
     Ok(())
